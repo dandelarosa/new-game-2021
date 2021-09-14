@@ -18,11 +18,7 @@ let charWidth = 20;
 let charHeight = 20;
 const CHAR_SPEED = 5;
 
-let bulletWidth = 10;
-let bulletHeight = 10;
-let bulletX = charX + (charWidth - bulletWidth) / 2;
-let bulletY = charY + (charHeight - bulletHeight) / 2;
-const BULLET_SPEED = 25;
+let bullets = [];
 
 setInterval(() => {
   if (keyState[KEY_LEFT_ARROW]) {
@@ -43,12 +39,10 @@ setInterval(() => {
   if (charY < 0) charY = 0;
   if (charY > GAME_HEIGHT - charHeight) charY = GAME_HEIGHT - charHeight;
 
+  bullets.forEach(bullet => bullet.update());
+  // Don't move bullet the same frame it is created
   if (keyState[KEY_SPACE]) {
-    bulletX = charX + (charWidth - bulletWidth) / 2;
-    bulletY = charY + (charHeight - bulletHeight) / 2;
-  }
-  else {
-    bulletX = bulletX + BULLET_SPEED;
+    bullets.push(new Bullet(charX + (charWidth - Bullet.WIDTH) / 2, charY + (charHeight - Bullet.HEIGHT) / 2));
   }
 
   ctx.fillStyle = 'black';
@@ -57,8 +51,16 @@ setInterval(() => {
   ctx.fillStyle = 'red';
   ctx.fillRect(charX, charY, charWidth, charHeight);
 
-  ctx.fillStyle = 'white';
-  ctx.fillRect(bulletX, bulletY, bulletWidth, bulletHeight);
+  bullets.forEach(bullet => bullet.draw(ctx));
+
+  // Clean up memory
+  console.log('number of bullets: ', bullets.length);
+  for (let i = 0; i < bullets.length; i++) {
+    let bullet = bullets[i];
+    if (bullet.x > GAME_WIDTH * 2) {
+      bullets.splice(i--, 1);
+    }
+  }
 }, 33);
 
 document.addEventListener('keydown', onKeydown);
