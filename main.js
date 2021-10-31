@@ -20,6 +20,10 @@ const CHAR_SPEED = 5;
 
 let bullets = [];
 
+let enemyTimer = 0;
+const ENEMY_DELAY = 30;
+let enemies = [];
+
 setInterval(() => {
   if (keyState[KEY_LEFT_ARROW]) {
     charX = charX - CHAR_SPEED;
@@ -45,6 +49,13 @@ setInterval(() => {
     bullets.push(new Bullet(charX + (charWidth - Bullet.WIDTH) / 2, charY + (charHeight - Bullet.HEIGHT) / 2));
   }
 
+  enemies.forEach(enemy => enemy.update());
+  if (enemyTimer++ === ENEMY_DELAY) {
+    const enemyY = (GAME_HEIGHT - Enemy.HEIGHT) * Math.random();
+    enemies.push(new Enemy(GAME_WIDTH, enemyY));
+    enemyTimer = 0;
+  }
+
   ctx.fillStyle = 'black';
   ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
@@ -52,6 +63,7 @@ setInterval(() => {
   ctx.fillRect(charX, charY, charWidth, charHeight);
 
   bullets.forEach(bullet => bullet.draw(ctx));
+  enemies.forEach(enemy => enemy.draw(ctx));
 
   // Clean up memory
   console.log('number of bullets: ', bullets.length);
@@ -59,6 +71,13 @@ setInterval(() => {
     let bullet = bullets[i];
     if (bullet.x > GAME_WIDTH * 2) {
       bullets.splice(i--, 1);
+    }
+  }
+  console.log('number of enemies: ', enemies.length);
+  for (let i = 0; i < enemies.length; i++) {
+    let enemy = enemies[i];
+    if (enemy.isOutOfBounds()) {
+      enemies.splice(i--, 1);
     }
   }
 }, 33);
