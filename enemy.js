@@ -5,6 +5,8 @@ class Enemy {
   constructor(x, y) {
     this.x = x;
     this.y = y;
+    this.width = Enemy.WIDTH;
+    this.height = Enemy.HEIGHT;
   }
 
   update() {

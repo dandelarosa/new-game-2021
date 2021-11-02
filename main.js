@@ -24,7 +24,17 @@ let enemyTimer = 0;
 const ENEMY_DELAY = 30;
 let enemies = [];
 
-setInterval(() => {
+let intervalID = setInterval(() => {
+  try {
+    eachFrame();
+  }
+  catch(e) {
+    clearInterval(intervalID);
+    throw e;
+  }
+}, 33);
+
+function eachFrame() {
   if (keyState[KEY_LEFT_ARROW]) {
     charX = charX - CHAR_SPEED;
   }
@@ -56,6 +66,16 @@ setInterval(() => {
     enemyTimer = 0;
   }
 
+  for (let i = 0; i < bullets.length; i++) {
+    for (let j = 0; j < enemies.length; j++) {
+      if (objectsCollide(bullets[i], enemies[j])) {
+        bullets.splice(i--, 1);
+        enemies.splice(j--, 1);
+        break;
+      }
+    }
+  }
+
   ctx.fillStyle = 'black';
   ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
@@ -80,7 +100,7 @@ setInterval(() => {
       enemies.splice(i--, 1);
     }
   }
-}, 33);
+}
 
 document.addEventListener('keydown', onKeydown);
 
@@ -92,4 +112,22 @@ document.addEventListener('keyup', onKeyup);
 
 function onKeyup(event) {
   keyState[event.keyCode] = false;
+}
+
+function objectsCollide(first, second) {
+  if (first.x > second.x + second.width) {
+    return false;
+  }
+  else if (first.x + first.width < second.x) {
+    return false;
+  }
+  else if (first.y > second.y + second.height) {
+    return false;
+  }
+  else if (first.y + first.height < second.y) {
+    return false;
+  }
+  else {
+    return true;
+  }
 }
