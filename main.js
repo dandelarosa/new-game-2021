@@ -18,6 +18,7 @@ let charWidth = 20;
 let charHeight = 20;
 const CHAR_SPEED = 5;
 
+let canShoot = true;
 let bullets = [];
 
 let enemyTimer = 0;
@@ -55,8 +56,12 @@ function eachFrame() {
 
   bullets.forEach(bullet => bullet.update());
   // Don't move bullet the same frame it is created
-  if (keyState[KEY_SPACE]) {
+  if (keyState[KEY_SPACE] && canShoot) {
     bullets.push(new Bullet(charX + (charWidth - Bullet.WIDTH) / 2, charY + (charHeight - Bullet.HEIGHT) / 2));
+    canShoot = false;
+  }
+  else if (!keyState[KEY_SPACE]) {
+    canShoot = true;
   }
 
   enemies.forEach(enemy => enemy.update());
