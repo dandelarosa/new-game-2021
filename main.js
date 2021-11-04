@@ -25,6 +25,8 @@ let enemyTimer = 0;
 const ENEMY_DELAY = 30;
 let enemies = [];
 
+let score = 0;
+
 let intervalID = setInterval(() => {
   try {
     eachFrame();
@@ -76,6 +78,7 @@ function eachFrame() {
       if (objectsCollide(bullets[i], enemies[j])) {
         bullets.splice(i--, 1);
         enemies.splice(j--, 1);
+        score += 1;
         break;
       }
     }
@@ -89,6 +92,10 @@ function eachFrame() {
 
   bullets.forEach(bullet => bullet.draw(ctx));
   enemies.forEach(enemy => enemy.draw(ctx));
+
+  ctx.fillStyle = 'white';
+  ctx.font = '24px sans-serif';
+  ctx.fillText('Score: ' + score, 10, 30);
 
   // Clean up memory
   console.log('number of bullets: ', bullets.length);
