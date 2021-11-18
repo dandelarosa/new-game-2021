@@ -3,6 +3,7 @@ const KEY_LEFT_ARROW = 37;
 const KEY_UP_ARROW = 38;
 const KEY_RIGHT_ARROW = 39;
 const KEY_DOWN_ARROW = 40;
+const KEY_DOWN_BACKQUOTE = 192;
 let keyState = {};
 
 const GAME_WIDTH = 640;
@@ -50,6 +51,9 @@ function eachFrame() {
   if (keyState[KEY_DOWN_ARROW]) {
     charY = charY + CHAR_SPEED;
   }
+  if (keyState[KEY_DOWN_BACKQUOTE]) {
+    activateDebug();
+  }
 
   if (charX < 0) charX = 0;
   if (charX > GAME_WIDTH - charWidth) charX = GAME_WIDTH - charWidth;
@@ -96,6 +100,8 @@ function eachFrame() {
   ctx.fillStyle = 'white';
   ctx.font = '24px sans-serif';
   ctx.fillText('Score: ' + score, 10, 30);
+
+  drawDebug();
 
   // Clean up memory
   console.log('number of bullets: ', bullets.length);
